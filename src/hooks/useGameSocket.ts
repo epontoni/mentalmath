@@ -100,8 +100,8 @@ export function useGameSocket() {
 
   // Initialize Socket connection
   useEffect(() => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : undefined;
-    const socket = io(origin, {
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== 'undefined' ? window.location.origin : undefined);
+    const socket = io(socketUrl, {
       path: '/socket.io',
       transports: ['polling', 'websocket'],
       reconnectionAttempts: 30,
