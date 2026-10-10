@@ -1,0 +1,221 @@
+// Prisma Schema for MentalMath (Moravec + Kahoot inspired real-time mental math game)
+// Compatible with PostgreSQL (Neon / Supabase / Railway / Local Postgres)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------
+// User & Player Profiles
+// ------------------------------------------------------
+model User {
+  id            String         @id @default(cuid())
+  email         String?        @unique
+  name          String?
+  avatar        String?        @default("brain")
+  totalScore    Int            @default(0)
+  drillsPlayed  Int            @default(0)
+  gamesPlayed   Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  drillRecords  DrillRecord[]
+  gameTemplates GameTemplate[]
+  hostedGames   GameSession[]  @relation("HostGames")
+  gameScores    GameScore[]
+
+  @@map("users")
+}
+
+// ------------------------------------------------------
+// Academy: Mental Math Courses & Techniques
+// ------------------------------------------------------
+model AcademyCategory {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  title       String
+  description String
+  icon        String            @default("zap")
+  order       Int               @default(0)
+  techniques  AcademyTechnique[]
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("academy_categories")
+}
+
+model AcademyTechnique {
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  title          String
+  shortDesc      String
+  fullDesc       String
+  difficulty     Difficulty      @default(BEGINNER)
+  estimatedMin   Int             @default(5)
+  badgeIcon      String          @default("star")
+  categorySlug   String
+  category       AcademyCategory @relation(fields: [categorySlug], references: [slug], onDelete: Cascade)
+  
+  // Step-by-step interactive breakdown (JSON formatted or relation)
+  steps          TechniqueStep[]
+  drillRecords   DrillRecord[]
+
+  order          Int             @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@map("academy_techniques")
+}
+
+model TechniqueStep {
+  id             String           @id @default(cuid())
+  techniqueId    String
+  technique      AcademyTechnique @relation(fields: [techniqueId], references: [id], onDelete: Cascade)
+  stepNumber     Int
+  title          String
+  explanation    String
+  exampleFormula String           // e.g. "35 × 11"
+  stepBreakdown  Json             // Detailed visual blocks: [{ block: "3", note: "Primer dígito" }, { block: "3+5 = 8", note: "Suma centro" }, { block: "5", note: "Último dígito" }]
+  visualHint     String?
+
+  createdAt      DateTime         @default(now())
+
+  @@unique([techniqueId, stepNumber])
+  @@map("technique_steps")
+}
+
+model DrillRecord {
+  id             String           @id @default(cuid())
+  userId         String?
+  user           User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  techniqueId    String
+  technique      AcademyTechnique @relation(fields: [techniqueId], references: [id], onDelete: Cascade)
+  
+  guestPlayerId  String?          // For unauthenticated localStorage users
+  score          Int
+  accuracy       Float            // Percentage (0 - 100)
+  correctCount   Int
+  totalQuestions Int
+  timeSpentSec   Int
+  starsEarned    Int              @default(1) // 1 to 3 stars
+  completedAt    DateTime         @default(now())
+
+  @@map("drill_records")
+}
+
+// ------------------------------------------------------
+// Game Templates & Quizzes (Manual / Procedural / AI)
+// ------------------------------------------------------
+model GameTemplate {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  creatorId   String?
+  creator     User?         @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  
+  generationType GenerationType @default(PROCEDURAL)
+  difficulty     Difficulty     @default(MEDIUM)
+  operations     String[]       // ["ADDITION", "MULTIPLICATION_11", "SQUARE_5"]
+  timePerQuestion Int           @default(10) // Seconds
+  isPublic       Boolean        @default(true)
+  
+  questions   Question[]
+  sessions    GameSession[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("game_templates")
+}
+
+model Question {
+  id             String        @id @default(cuid())
+  templateId     String?
+  template       GameTemplate? @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  
+  order          Int           @default(0)
+  expression     String        // e.g. "45 × 11" or "100 - 37"
+  correctAnswer  Int           // The numerical result (e.g. 495 or 63)
+  explanation    String?       // "Truco: 4 _ (4+5) _ 5 = 495"
+  timeLimitSec   Int           @default(10)
+  operationType  String        @default("MIXED")
+  difficulty     Difficulty    @default(MEDIUM)
+
+  createdAt      DateTime      @default(now())
+
+  @@map("questions")
+}
+
+// ------------------------------------------------------
+// Multiplayer Game Sessions (Historical & Reporting)
+// ------------------------------------------------------
+model GameSession {
+  id             String        @id @default(cuid())
+  pin            String
+  hostId         String?
+  host           User?         @relation("HostGames", fields: [hostId], references: [id], onDelete: SetNull)
+  templateId     String?
+  template       GameTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  
+  status         SessionStatus @default(COMPLETED)
+  totalRounds    Int           @default(10)
+  timePerRound   Int           @default(10)
+  totalPlayers   Int           @default(0)
+  
+  scores         GameScore[]
+  startedAt      DateTime      @default(now())
+  endedAt        DateTime?
+
+  @@map("game_sessions")
+}
+
+model GameScore {
+  id             String      @id @default(cuid())
+  sessionId      String
+  session        GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  nickname       String
+  avatar         String      @default("brain")
+  rank           Int
+  score          Int
+  accuracy       Float
+  correctAnswers Int
+  avgResponseMs  Int
+
+  createdAt      DateTime    @default(now())
+
+  @@map("game_scores")
+}
+
+// ------------------------------------------------------
+// Enums
+// ------------------------------------------------------
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  MASTER
+  MEDIUM
+}
+
+enum GenerationType {
+  MANUAL
+  PROCEDURAL
+  AI_GENERATED
+}
+
+enum SessionStatus {
+  LOBBY
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
