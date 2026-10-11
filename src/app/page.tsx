@@ -165,7 +165,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-[#595B5F] text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto font-medium">
-            Un gimnasio colaborativo de agilidad numérica: desafía a tus compañeros, proyecta en el aula o domina atajos matemáticos paso a paso.
+            Un gimnasio colaborativo de agilidad numérica: desafía a tus compañeros, proyecta en el aula. Transformá complicados cálculos en sencillos mediante el cálculo mental.
           </p>
         </motion.div>
 
@@ -324,7 +324,7 @@ export default function HomePage() {
               <span className="pp-highlight pp-highlight-bluelight">¿Cómo Funciona?</span>
             </h2>
             <p className="text-[#595B5F] font-medium text-sm sm:text-base max-w-xl mx-auto">
-              Diseñado con la filosofía abierta de Precious Plastic: sencillo de usar, sin registros obligatorios y accesible para todos.
+              Aprender y poner en juego habilidades de cálculo mental es muy fácil:
             </p>
           </div>
 
@@ -572,7 +572,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
             <span className="w-3 h-3 rounded-full bg-[#56B870] border border-[#1C1D1F]" />
-            <span className="text-[#1C1D1F]">MentalMath — Plataforma de Cálculo Mental en Tiempo Real</span>
+            <span className="text-[#1C1D1F]">MentalMath</span>
           </div>
           <div className="flex items-center space-x-4">
             <a
@@ -585,7 +585,14 @@ export default function HomePage() {
             </a>
             <Link href="/academy" className="hover:underline text-[#1C1D1F]">Academia</Link>
             <span className="text-slate-400">•</span>
-            <span>100% Libre & Abierto</span>
+            <a
+              href="https://epontoni.github.io/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline text-[#1C1D1F]"
+            >
+              Desarrollado por Emanuel Pontoni
+            </a>
           </div>
         </div>
       </footer>

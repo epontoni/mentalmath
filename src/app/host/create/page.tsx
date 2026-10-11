@@ -407,59 +407,144 @@ export default function HostCreatePage() {
         </div>
 
         {/* Host Plays Setting (El que crea la sala también juega) */}
-        <div className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#1C1D1F] shadow-[0_4px_0_0_#1C1D1F] mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-start space-x-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-[#ABD3DF] border-2 border-[#1C1D1F] flex items-center justify-center text-[#1C1D1F] shadow-[0_2px_0_0_#1C1D1F] shrink-0">
-              <BrainCircuit className="w-6 h-6 stroke-[2.5]" />
+        <div className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#1C1D1F] shadow-[0_4px_0_0_#1C1D1F] mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b-2 border-[#EDE8E1]">
+            <div className="flex items-start space-x-3.5">
+              <div className="w-11 h-11 rounded-2xl bg-[#ABD3DF] border-2 border-[#1C1D1F] flex items-center justify-center text-[#1C1D1F] shadow-[0_2px_0_0_#1C1D1F] shrink-0">
+                <BrainCircuit className="w-6 h-6 stroke-[2.5]" />
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-heading font-black text-base sm:text-lg text-[#1C1D1F]">
+                    ¿Quieres jugar tú también en la sala?
+                  </h3>
+                  <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-[#1C1D1F] ${
+                    hostPlays ? 'bg-[#BFDEBA] text-[#1C1D1F]' : 'bg-[#FEE77B] text-[#1C1D1F]'
+                  }`}>
+                    {hostPlays ? 'Modo: Participar y Jugar' : 'Modo: Sólo Anfitrión'}
+                  </span>
+                </div>
+                <p className="text-xs font-medium text-[#595B5F] mt-1">
+                  Selecciona cómo vas a interactuar con la partida desde este ordenador.
+                </p>
+              </div>
             </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <h3 className="font-heading font-black text-base text-[#1C1D1F]">
-                  ¿Quieres jugar tú también en la sala?
-                </h3>
-                <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border border-[#1C1D1F] ${
-                  hostPlays ? 'bg-[#BFDEBA] text-[#1C1D1F]' : 'bg-[#EDE8E1] text-[#595B5F]'
-                }`}>
-                  {hostPlays ? 'Anfitrión Jugador' : 'Solo Anfitrión'}
-                </span>
-              </div>
-              <p className="text-xs font-medium text-[#595B5F] mt-0.5 max-w-xl">
-                Permite al creador responder los cálculos y competir en el podio desde su propia pantalla con teclado numérico interactivo.
-              </p>
-              <div className="mt-2.5 flex items-center space-x-2 text-[11px] font-bold text-[#1C1D1F] bg-[#FEE77B]/40 px-3 py-1.5 rounded-xl border border-[#1C1D1F]/20">
-                <Tv className="w-3.5 h-3.5 text-[#1C1D1F] shrink-0" />
-                <span>
-                  <strong>Enlace para proyectar siempre disponible:</strong> Tendrás siempre un enlace directo para abrir la vista limpia en pantalla gigante o TV mientras juegas en tu pantalla.
-                </span>
-              </div>
+
+            {/* Selector Buttons */}
+            <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+              <button
+                type="button"
+                onClick={() => setHostPlays(false)}
+                className={`h-11 px-4 rounded-2xl font-heading font-black text-xs border-2 border-[#1C1D1F] transition-all flex items-center space-x-1.5 ${
+                  !hostPlays
+                    ? 'bg-[#FEE77B] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
+                    : 'bg-[#FBF9F5] text-[#595B5F] hover:bg-[#EDE8E1]'
+                }`}
+              >
+                <span>Sólo Anfitrión</span>
+                {!hostPlays && <span>✓</span>}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setHostPlays(true)}
+                className={`h-11 px-4 rounded-2xl font-heading font-black text-xs border-2 border-[#1C1D1F] transition-all flex items-center space-x-1.5 ${
+                  hostPlays
+                    ? 'bg-[#BFDEBA] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
+                    : 'bg-[#FBF9F5] text-[#595B5F] hover:bg-[#EDE8E1]'
+                }`}
+              >
+                <span>Participar y Jugar</span>
+                {hostPlays && <span>✓</span>}
+              </button>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 self-end md:self-auto">
-            {hostPlays && (
-              <div className="flex items-center space-x-2 bg-[#FBF9F5] p-1.5 rounded-2xl border-2 border-[#1C1D1F]">
-                <label className="text-[11px] font-black text-[#595B5F] pl-2">Tu Apodo:</label>
+          {/* Nickname input when host plays */}
+          {hostPlays && (
+            <div className="py-4 border-b-2 border-[#EDE8E1] flex flex-wrap items-center gap-3">
+              <div className="flex items-center space-x-2 bg-[#FBF9F5] p-2 rounded-2xl border-2 border-[#1C1D1F]">
+                <label className="text-xs font-black text-[#1C1D1F] pl-2">Tu Apodo de Jugador:</label>
                 <input
                   type="text"
                   maxLength={14}
                   value={hostNickname}
                   onChange={(e) => setHostNickname(e.target.value)}
                   placeholder="Apodo Anfitrión"
-                  className="w-32 h-9 px-3 rounded-xl bg-white border border-[#1C1D1F] text-xs font-bold text-[#1C1D1F] focus:outline-none focus:ring-1 focus:ring-[#BFDEBA]"
+                  className="w-40 h-9 px-3 rounded-xl bg-white border border-[#1C1D1F] text-xs font-bold text-[#1C1D1F] focus:outline-none focus:ring-1 focus:ring-[#BFDEBA]"
                 />
               </div>
-            )}
+              <span className="text-xs font-bold text-[#595B5F]">
+                Aparecerás compitiendo en el podio y las clasificaciones con este apodo.
+              </span>
+            </div>
+          )}
 
-            <button
-              onClick={() => setHostPlays(!hostPlays)}
-              className={`h-11 px-5 rounded-2xl font-heading font-black text-xs border-2 border-[#1C1D1F] transition-all flex items-center space-x-1.5 ${
-                hostPlays
-                  ? 'bg-[#BFDEBA] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
-                  : 'bg-[#EDE8E1] text-[#595B5F]'
+          {/* Explanatory Cards */}
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Solo Anfitrión (Docente / Aula) */}
+            <div 
+              onClick={() => setHostPlays(false)}
+              className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                !hostPlays 
+                  ? 'bg-[#FEE77B]/20 border-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]' 
+                  : 'bg-[#FBF9F5] border-[#1C1D1F]/20 opacity-70 hover:opacity-100 hover:border-[#1C1D1F]'
               }`}
             >
-              <span>{hostPlays ? 'Participar y Jugar ✓' : 'Solo Proyectar'}</span>
-            </button>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">👨‍🏫</span>
+                  <h4 className="font-heading font-black text-sm text-[#1C1D1F]">
+                    Sólo Anfitrión (Proyectar en Aula)
+                  </h4>
+                </div>
+                {!hostPlays && (
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#1C1D1F] text-white">
+                    Activo
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-[#595B5F] leading-relaxed font-medium mb-3">
+                Pensado para que el <strong>docente o facilitador</strong> cree la sala y use su ordenador para <strong>proyectar el cálculo a resolver, el avance y los resultados (podio)</strong> en la pantalla del aula o cañón, <strong>sin participar como jugador</strong>.
+              </p>
+              <div className="text-[11px] font-bold text-[#1C1D1F] flex items-center space-x-1.5">
+                <Tv className="w-3.5 h-3.5 text-[#1C1D1F] shrink-0" />
+                <span>Ideal para clases, colegios y eventos con proyector.</span>
+              </div>
+            </div>
+
+            {/* Participar y Jugar (Amigos / Desafío) */}
+            <div 
+              onClick={() => setHostPlays(true)}
+              className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                hostPlays 
+                  ? 'bg-[#BFDEBA]/25 border-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]' 
+                  : 'bg-[#FBF9F5] border-[#1C1D1F]/20 opacity-70 hover:opacity-100 hover:border-[#1C1D1F]'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">🎮</span>
+                  <h4 className="font-heading font-black text-sm text-[#1C1D1F]">
+                    Participar y Jugar (Jugar contra Amigos)
+                  </h4>
+                </div>
+                {hostPlays && (
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#1C1D1F] text-white">
+                    Activo
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-[#595B5F] leading-relaxed font-medium mb-3">
+                Pensado para <strong>amigos o compañeros</strong> donde quien crea la sala también quiere <strong>competir y jugar contra los demás</strong> con teclado numérico en pantalla.
+              </p>
+              <div className="p-2.5 rounded-xl bg-white border border-[#1C1D1F]/30 text-[11px] font-bold text-[#1C1D1F] flex items-start space-x-2">
+                <Tv className="w-3.5 h-3.5 text-[#1C1D1F] shrink-0 mt-0.5" />
+                <span>
+                  <strong>Enlace para proyectar incluido:</strong> Aunque compitas jugando en tu ordenador, el sistema también te habilitará un enlace exclusivo para visualizar o proyectar la partida y el podio en otra pantalla.
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 

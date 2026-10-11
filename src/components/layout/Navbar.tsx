@@ -55,11 +55,11 @@ export const Navbar: React.FC = () => {
 
           <Link
             href="/host/create"
-            className="flex items-center space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full border-2 border-[#1C1D1F] bg-[#FEE77B] hover:bg-[#FFDE59] text-[#1C1D1F] text-xs sm:text-sm font-black shadow-[0_2px_0_0_#1C1D1F] sm:shadow-[0_3px_0_0_#1C1D1F] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none transition-all"
+            className="flex items-center space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full border-2 border-[#1C1D1F] bg-[#FEE77B] hover:bg-[#FFDE59] text-[#1C1D1F] text-xs sm:text-sm font-black shadow-[0_2px_0_0_#1C1D1F] sm:shadow-[0_3px_0_0_#1C1D1F] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none transition-all shrink-0"
             title="Crear sala para proyectar"
           >
             <Tv className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1C1D1F]" />
-            <span className="hidden xs:inline">Crear Sala</span>
+            <span className="whitespace-nowrap">Crear Sala</span>
           </Link>
 
           {/* Donation Button (Mercado Pago) */}
