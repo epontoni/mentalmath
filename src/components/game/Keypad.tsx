@@ -102,17 +102,17 @@ export const Keypad: React.FC<KeypadProps> = ({
   ];
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col items-center select-none px-2 sm:px-3">
+    <div className="w-full max-w-sm mx-auto flex flex-col items-center select-none px-1.5 sm:px-3">
       {/* Input Display Screen - Workshop Caliper/Gauge Style */}
-      <div className="w-full mb-2 sm:mb-3">
-        <div className="h-12 sm:h-14 w-full rounded-2xl bg-white border-2 border-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] flex items-center justify-between px-3.5">
-          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#EDE8E1] border border-[#1C1D1F] text-[#1C1D1F]">
+      <div className="w-full mb-1.5 sm:mb-2.5">
+        <div className="h-[clamp(2.4rem,5.2vh,3.25rem)] w-full rounded-xl sm:rounded-2xl bg-white border-2 border-[#1C1D1F] shadow-[0_2px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] flex items-center justify-between px-3">
+          <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#EDE8E1] border border-[#1C1D1F] text-[#1C1D1F]">
             Respuesta
           </span>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5">
             <span
-              className={`text-2xl sm:text-3xl font-heading font-black tracking-wider ${
+              className={`text-xl sm:text-2xl font-heading font-black tracking-wider ${
                 value ? 'text-[#1C1D1F]' : 'text-slate-400'
               }`}
             >
@@ -123,7 +123,7 @@ export const Keypad: React.FC<KeypadProps> = ({
               <motion.span
                 animate={{ opacity: [1, 0, 1] }}
                 transition={{ repeat: Infinity, duration: 0.8 }}
-                className="inline-block w-1 h-5 sm:h-6 bg-[#1C1D1F] rounded"
+                className="inline-block w-1 h-4 sm:h-5 bg-[#1C1D1F] rounded"
               />
             )}
           </div>
@@ -144,7 +144,7 @@ export const Keypad: React.FC<KeypadProps> = ({
       </div>
 
       {/* Grid Keypad - Molded Plastic Tiles */}
-      <div className="w-full grid grid-cols-3 gap-1.5 sm:gap-2.5">
+      <div className="w-full grid grid-cols-3 gap-1.5 sm:gap-2">
         {/* Digits 1 to 9 */}
         {digits.map((row) =>
           row.map((digit) => (
@@ -155,14 +155,14 @@ export const Keypad: React.FC<KeypadProps> = ({
               onClick={() => handleDigit(digit)}
               disabled={disabled}
               className={`
-                h-12 sm:h-15 rounded-xl sm:rounded-2xl font-heading font-black text-xl sm:text-2xl
+                h-[clamp(2.6rem,6.2vh,3.5rem)] rounded-xl sm:rounded-2xl font-heading font-black text-xl sm:text-2xl
                 border-2 border-[#1C1D1F] flex items-center justify-center transition-colors duration-75
                 ${
                   disabled
                     ? 'bg-[#EDE8E1] text-slate-400 border-slate-400 shadow-none cursor-not-allowed'
                     : activeKey === digit
                     ? 'bg-[#FEE77B] text-[#1C1D1F] shadow-[0_1px_0_0_#1C1D1F]'
-                    : 'bg-white hover:bg-[#FBF9F5] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] active:shadow-[0_1px_0_0_#1C1D1F]'
+                    : 'bg-white hover:bg-[#FBF9F5] text-[#1C1D1F] shadow-[0_2.5px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] active:shadow-[0_1px_0_0_#1C1D1F]'
                 }
               `}
             >
@@ -178,19 +178,19 @@ export const Keypad: React.FC<KeypadProps> = ({
           onClick={handleBackspace}
           disabled={disabled || value.length === 0}
           className={`
-            h-12 sm:h-15 rounded-xl sm:rounded-2xl font-heading font-black border-2 border-[#1C1D1F]
+            h-[clamp(2.6rem,6.2vh,3.5rem)] rounded-xl sm:rounded-2xl font-heading font-black border-2 border-[#1C1D1F]
             flex items-center justify-center transition-colors duration-75
             ${
               disabled || value.length === 0
                 ? 'bg-[#EDE8E1] text-slate-400 border-slate-400 shadow-none cursor-not-allowed'
                 : activeKey === 'backspace'
                 ? 'bg-[#FF6640] text-white shadow-[0_1px_0_0_#1C1D1F]'
-                : 'bg-[#FF7A59] hover:bg-[#FF6640] text-white shadow-[0_3px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] active:shadow-[0_1px_0_0_#1C1D1F]'
+                : 'bg-[#FF7A59] hover:bg-[#FF6640] text-white shadow-[0_2.5px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] active:shadow-[0_1px_0_0_#1C1D1F]'
             }
           `}
           title="Borrar dígito"
         >
-          <Delete className="w-5 h-5 stroke-[2.5]" />
+          <Delete className="w-4.5 h-4.5 sm:w-5 sm:h-5 stroke-[2.5]" />
         </motion.button>
 
         {/* 0 Button */}
@@ -200,14 +200,14 @@ export const Keypad: React.FC<KeypadProps> = ({
           onClick={() => handleDigit('0')}
           disabled={disabled}
           className={`
-            h-12 sm:h-15 rounded-xl sm:rounded-2xl font-heading font-black text-xl sm:text-2xl
+            h-[clamp(2.6rem,6.2vh,3.5rem)] rounded-xl sm:rounded-2xl font-heading font-black text-xl sm:text-2xl
             border-2 border-[#1C1D1F] flex items-center justify-center transition-colors duration-75
             ${
               disabled
                 ? 'bg-[#EDE8E1] text-slate-400 border-slate-400 shadow-none cursor-not-allowed'
                 : activeKey === '0'
                 ? 'bg-[#FEE77B] text-[#1C1D1F] shadow-[0_1px_0_0_#1C1D1F]'
-                : 'bg-white hover:bg-[#FBF9F5] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] active:shadow-[0_1px_0_0_#1C1D1F]'
+                : 'bg-white hover:bg-[#FBF9F5] text-[#1C1D1F] shadow-[0_2.5px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] active:shadow-[0_1px_0_0_#1C1D1F]'
             }
           `}
         >
@@ -221,14 +221,14 @@ export const Keypad: React.FC<KeypadProps> = ({
           onClick={handleSubmit}
           disabled={disabled || value.length === 0}
           className={`
-            h-12 sm:h-15 rounded-xl sm:rounded-2xl font-heading font-black text-base sm:text-xl
+            h-[clamp(2.6rem,6.2vh,3.5rem)] rounded-xl sm:rounded-2xl font-heading font-black text-base sm:text-xl
             border-2 border-[#1C1D1F] flex items-center justify-center space-x-1 transition-colors duration-75
             ${
               disabled || value.length === 0
                 ? 'bg-[#EDE8E1] text-slate-400 border-slate-400 shadow-none cursor-not-allowed'
                 : activeKey === 'submit'
                 ? 'bg-[#FEE77B] text-[#1C1D1F] shadow-[0_1px_0_0_#1C1D1F]'
-                : 'bg-[#FEE77B] hover:bg-[#FFDE59] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] active:shadow-[0_1px_0_0_#1C1D1F]'
+                : 'bg-[#FEE77B] hover:bg-[#FFDE59] text-[#1C1D1F] shadow-[0_2.5px_0_0_#1C1D1F] sm:shadow-[0_4px_0_0_#1C1D1F] active:shadow-[0_1px_0_0_#1C1D1F]'
             }
           `}
           title="Enviar respuesta"

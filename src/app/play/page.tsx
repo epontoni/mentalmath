@@ -299,9 +299,9 @@ function PlayContent() {
     }
 
     return (
-      <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#1C1D1F] select-none">
+      <div className="h-[100dvh] max-h-[100dvh] flex flex-col justify-between bg-[#FBF9F5] text-[#1C1D1F] select-none overflow-hidden">
         {/* Top Status */}
-        <div className="w-full max-w-md mx-auto px-4 pt-3 pb-2 flex flex-col space-y-2">
+        <div className="shrink-0 w-full max-w-md mx-auto px-4 pt-2.5 pb-1 sm:pt-3 sm:pb-2 flex flex-col space-y-1.5 sm:space-y-2">
           <div className="flex items-center justify-between text-xs font-black">
             <span className="px-3 py-1 rounded-full bg-[#EDE8E1] border border-[#1C1D1F]">
               Pregunta <strong className="text-[#1C1D1F]">{soloQIndex + 1}</strong> de {soloQuestions.length}
@@ -337,24 +337,24 @@ function PlayContent() {
           <TimerBar remainingSec={soloTimeRemaining} totalSec={soloTimeTotal} />
         </div>
 
-        {/* Calculation Screen with Spring Animations & Floating Points */}
-        <div className="flex-1 max-w-md w-full mx-auto px-4 flex flex-col justify-between pb-4">
-          <div className="relative my-auto">
-            {/* Floating Points Pop-up */}
+        {/* Calculation Screen & Keypad Container */}
+        <div className="flex-1 max-w-md w-full mx-auto px-3 sm:px-4 flex flex-col justify-center items-center gap-2 sm:gap-3.5 min-h-0 py-1 sm:py-2">
+          {/* Floating Points & Calculation Box */}
+          <div className="w-full relative">
             <AnimatePresence>
               {soloFeedback && (
                 <motion.div
                   initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                  animate={{ opacity: 1, y: -28, scale: 1.15 }}
-                  exit={{ opacity: 0, y: -45, scale: 0.8 }}
+                  animate={{ opacity: 1, y: -24, scale: 1.1 }}
+                  exit={{ opacity: 0, y: -35, scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 450, damping: 18 }}
-                  className={`absolute -top-5 left-1/2 -translate-x-1/2 z-30 px-4 py-1.5 rounded-full border-2 border-[#1C1D1F] font-heading font-black text-sm shadow-[0_4px_0_0_#1C1D1F] flex items-center space-x-1.5 ${
+                  className={`absolute -top-3 left-1/2 -translate-x-1/2 z-30 px-3.5 py-1 rounded-full border-2 border-[#1C1D1F] font-heading font-black text-xs sm:text-sm shadow-[0_3px_0_0_#1C1D1F] flex items-center space-x-1.5 ${
                     soloFeedback.isCorrect
                       ? 'bg-[#FEE77B] text-[#1C1D1F]'
                       : 'bg-[#FF7A59] text-white'
                   }`}
                 >
-                  <Sparkles className="w-4 h-4 fill-current" />
+                  <Sparkles className="w-3.5 h-3.5 fill-current" />
                   <span>{soloFeedback.isCorrect ? `+${soloFeedback.points} pts!` : '¡Falló!'}</span>
                 </motion.div>
               )}
@@ -362,10 +362,10 @@ function PlayContent() {
 
             <motion.div
               key={currentSoloQ.id}
-              initial={{ opacity: 0, scale: 0.9, y: 15 }}
+              initial={{ opacity: 0, scale: 0.9, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ type: "spring", stiffness: 350, damping: 24 }}
-              className={`py-8 sm:py-10 px-4 rounded-3xl border-2 border-[#1C1D1F] text-center shadow-[0_6px_0_0_#1C1D1F] transition-colors relative overflow-hidden ${
+              className={`w-full py-3 sm:py-5 px-4 rounded-2xl sm:rounded-3xl border-2 border-[#1C1D1F] text-center shadow-[0_4px_0_0_#1C1D1F] sm:shadow-[0_6px_0_0_#1C1D1F] transition-colors relative overflow-hidden ${
                 soloFeedback
                   ? soloFeedback.isCorrect
                     ? 'bg-[#BFDEBA]'
@@ -373,21 +373,23 @@ function PlayContent() {
                   : 'bg-white'
               }`}
             >
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#595B5F] mb-1 block">
+              <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#595B5F] mb-0.5 block">
                 Práctica Rápida
               </span>
 
-              <div className="text-4xl sm:text-6xl font-heading font-black tracking-tight text-[#1C1D1F] my-2">
+              <div className="text-3xl sm:text-5xl font-heading font-black tracking-tight text-[#1C1D1F] my-0.5 sm:my-1">
                 {currentSoloQ.expression}
               </div>
             </motion.div>
           </div>
 
-          <Keypad
-            key={currentSoloQ.id}
-            onSubmit={handleSoloSubmit}
-            disabled={soloFeedback !== null || soloTimeRemaining <= 0}
-          />
+          <div className="w-full shrink-0">
+            <Keypad
+              key={currentSoloQ.id}
+              onSubmit={handleSoloSubmit}
+              disabled={soloFeedback !== null || soloTimeRemaining <= 0}
+            />
+          </div>
         </div>
       </div>
     );
@@ -605,10 +607,10 @@ function PlayContent() {
   // ----------------------------------------------------------------
   if (gameStatus === 'QUESTION_ACTIVE' && currentQuestion) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#1C1D1F] select-none">
+      <div className="h-[100dvh] max-h-[100dvh] flex flex-col justify-between bg-[#FBF9F5] text-[#1C1D1F] select-none overflow-hidden">
         <DisconnectBanner />
         {/* Top Synchronized Status Bar */}
-        <div className="w-full max-w-md mx-auto px-4 pt-3 pb-2 flex flex-col space-y-2">
+        <div className="shrink-0 w-full max-w-md mx-auto px-4 pt-2.5 pb-1 sm:pt-3 sm:pb-2 flex flex-col space-y-1.5 sm:space-y-2">
           <div className="flex items-center justify-between text-xs font-black">
             <div className="flex items-center space-x-2">
               <span className="px-3 py-1 rounded-full bg-[#EDE8E1] border border-[#1C1D1F]">
@@ -653,48 +655,53 @@ function PlayContent() {
           <TimerBar remainingSec={timeRemaining} totalSec={timeTotal} />
         </div>
 
-        {/* Calculation Card */}
-        <div className="flex-1 max-w-md w-full mx-auto px-4 flex flex-col justify-between pb-4">
-          <motion.div
-            key={currentQuestion.id}
-            initial={{ opacity: 0, scale: 0.9, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 350, damping: 24 }}
-            className="my-2 sm:my-auto py-4 sm:py-8 px-4 rounded-3xl bg-white border-2 border-[#1C1D1F] text-center shadow-[0_4px_0_0_#1C1D1F] sm:shadow-[0_6px_0_0_#1C1D1F] relative overflow-hidden"
-          >
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#595B5F] mb-1 block">
-              Calcula Mentalmente
-            </span>
+        {/* Calculation Screen & Keypad Container */}
+        <div className="flex-1 max-w-md w-full mx-auto px-3 sm:px-4 flex flex-col justify-center items-center gap-2 sm:gap-3.5 min-h-0 py-1 sm:py-2">
+          {/* Calculation Box */}
+          <div className="w-full relative">
+            <motion.div
+              key={currentQuestion.id}
+              initial={{ opacity: 0, scale: 0.9, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 350, damping: 24 }}
+              className="w-full py-3 sm:py-5 px-4 rounded-2xl sm:rounded-3xl bg-white border-2 border-[#1C1D1F] text-center shadow-[0_4px_0_0_#1C1D1F] sm:shadow-[0_6px_0_0_#1C1D1F] relative overflow-hidden"
+            >
+              <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#595B5F] mb-0.5 block">
+                Calcula Mentalmente
+              </span>
 
-            <div className="text-4xl sm:text-6xl font-heading font-black tracking-tight text-[#1C1D1F] my-2">
-              {currentQuestion.expression}
-            </div>
-          </motion.div>
+              <div className="text-3xl sm:text-5xl font-heading font-black tracking-tight text-[#1C1D1F] my-0.5 sm:my-1">
+                {currentQuestion.expression}
+              </div>
+            </motion.div>
+          </div>
 
           {/* Keypad or Answer Submitted State */}
-          {hasAnsweredCurrentRound ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full max-w-sm mx-auto p-6 rounded-3xl bg-[#BFDEBA] border-2 border-[#1C1D1F] text-center shadow-[0_5px_0_0_#1C1D1F] mb-4"
-            >
-              <div className="w-12 h-12 rounded-full bg-white border-2 border-[#1C1D1F] flex items-center justify-center text-[#1C1D1F] mx-auto mb-3 shadow-[0_2px_0_0_#1C1D1F]">
-                <CheckCircle2 className="w-6 h-6 stroke-[3]" />
-              </div>
-              <h3 className="text-xl font-heading font-black text-[#1C1D1F] mb-1">
-                Respuesta Enviada: <span className="underline decoration-2">{submittedAnswer}</span>
-              </h3>
-              <p className="text-xs font-bold text-[#1C1D1F]/80">
-                Esperando a que termine el tiempo de la ronda...
-              </p>
-            </motion.div>
-          ) : (
-            <Keypad
-              key={currentQuestion.id}
-              onSubmit={handleSubmitKeypad}
-              disabled={timeRemaining <= 0}
-            />
-          )}
+          <div className="w-full shrink-0">
+            {hasAnsweredCurrentRound ? (
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full max-w-sm mx-auto p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#BFDEBA] border-2 border-[#1C1D1F] text-center shadow-[0_4px_0_0_#1C1D1F] mb-2"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border-2 border-[#1C1D1F] flex items-center justify-center text-[#1C1D1F] mx-auto mb-2 shadow-[0_2px_0_0_#1C1D1F]">
+                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-heading font-black text-[#1C1D1F] mb-0.5">
+                  Respuesta Enviada: <span className="underline decoration-2">{submittedAnswer}</span>
+                </h3>
+                <p className="text-xs font-bold text-[#1C1D1F]/80">
+                  Esperando a que termine el tiempo de la ronda...
+                </p>
+              </motion.div>
+            ) : (
+              <Keypad
+                key={currentQuestion.id}
+                onSubmit={handleSubmitKeypad}
+                disabled={timeRemaining <= 0}
+              />
+            )}
+          </div>
         </div>
       </div>
     );

@@ -315,9 +315,9 @@ export default function AcademyLessonPage() {
     }
 
     return (
-      <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#1C1D1F] select-none">
+      <div className="h-[100dvh] max-h-[100dvh] flex flex-col justify-between bg-[#FBF9F5] text-[#1C1D1F] select-none overflow-hidden">
         {/* Top Status */}
-        <div className="w-full max-w-md mx-auto px-4 pt-4 pb-2 flex flex-col space-y-2.5">
+        <div className="shrink-0 w-full max-w-md mx-auto px-4 pt-2.5 pb-1 sm:pt-3 sm:pb-2 flex flex-col space-y-1.5 sm:space-y-2">
           <div className="flex items-center justify-between text-xs font-black">
             <span className="px-3 py-1 rounded-full bg-[#EDE8E1] border border-[#1C1D1F]">
               Pregunta <strong className="text-[#1C1D1F]">{currentQIndex + 1}</strong> de {drillQuestions.length}
@@ -339,34 +339,40 @@ export default function AcademyLessonPage() {
           <TimerBar remainingSec={drillTimeRemaining} totalSec={drillTimeTotal} />
         </div>
 
-        {/* Calculation Screen */}
-        <div className="flex-1 max-w-md w-full mx-auto px-4 flex flex-col justify-between pb-6">
-          <motion.div
-            key={currentQ.id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className={`my-auto py-8 sm:py-10 px-4 rounded-3xl border-2 border-[#1C1D1F] text-center shadow-[0_6px_0_0_#1C1D1F] transition-colors ${
-              feedbackState
-                ? feedbackState.isCorrect
-                  ? 'bg-[#BFDEBA]'
-                  : 'bg-[#FF7A59] text-white'
-                : 'bg-white'
-            }`}
-          >
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#595B5F] mb-1 block">
-              {technique.title}
-            </span>
+        {/* Calculation Screen & Keypad Container */}
+        <div className="flex-1 max-w-md w-full mx-auto px-3 sm:px-4 flex flex-col justify-center items-center gap-2 sm:gap-3.5 min-h-0 py-1 sm:py-2">
+          {/* Calculation Box */}
+          <div className="w-full relative">
+            <motion.div
+              key={currentQ.id}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 350, damping: 24 }}
+              className={`w-full py-3 sm:py-5 px-4 rounded-2xl sm:rounded-3xl border-2 border-[#1C1D1F] text-center shadow-[0_4px_0_0_#1C1D1F] sm:shadow-[0_6px_0_0_#1C1D1F] transition-colors relative overflow-hidden ${
+                feedbackState
+                  ? feedbackState.isCorrect
+                    ? 'bg-[#BFDEBA]'
+                    : 'bg-[#FF7A59] text-white'
+                  : 'bg-white'
+              }`}
+            >
+              <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#595B5F] mb-0.5 block">
+                {technique.title}
+              </span>
 
-            <div className="text-5xl sm:text-6xl font-heading font-black tracking-tight text-[#1C1D1F] my-2">
-              {currentQ.expression}
-            </div>
-          </motion.div>
+              <div className="text-3xl sm:text-5xl font-heading font-black tracking-tight text-[#1C1D1F] my-0.5 sm:my-1">
+                {currentQ.expression}
+              </div>
+            </motion.div>
+          </div>
 
           {/* Keypad */}
-          <Keypad
-            onSubmit={handleDrillSubmit}
-            disabled={feedbackState !== null || drillTimeRemaining <= 0}
-          />
+          <div className="w-full shrink-0">
+            <Keypad
+              onSubmit={handleDrillSubmit}
+              disabled={feedbackState !== null || drillTimeRemaining <= 0}
+            />
+          </div>
         </div>
       </div>
     );
