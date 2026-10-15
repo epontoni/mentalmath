@@ -77,6 +77,13 @@ export default function HostCreatePage() {
     { type: 'MULTIPLICATION_11', label: 'Regla del 11', iconDesc: '65 × 11' },
     { type: 'COMPLEMENT_100', label: 'Complementos a 100', iconDesc: '100 - 64' },
     { type: 'SQUARE_5', label: 'Cuadrados en 5', iconDesc: '45²' },
+    { type: 'SQUARE_2DIGIT', label: 'Potencias (2 dígitos)', iconDesc: '23²' },
+    { type: 'SQUARE_3DIGIT', label: 'Potencias (3 dígitos)', iconDesc: '423²' },
+    { type: 'SQUARE_4DIGIT', label: 'Potencias (4 dígitos)', iconDesc: '4423²' },
+    { type: 'MAJOR_SYSTEM', label: 'Sistema Mayor (Mnemotecnia)', iconDesc: 'LUPA→59' },
+    { type: 'FRACTION_COMPARE', label: 'Comparar Fracciones', iconDesc: '3/4 vs 5/7' },
+    { type: 'FRACTION_OPS', label: 'Sumar / Restar Fracciones', iconDesc: '2/3 + 1/4' },
+    { type: 'SUPERMARKET_OFFERS', label: 'Ofertas de Supermercado', iconDesc: '3×2 vs 70%' },
     { type: 'DISTRIBUTIVE', label: 'Distributiva', iconDesc: '18 × 6' },
     { type: 'DOUBLE_HALF', label: 'Doble y Mitad', iconDesc: '25 × 16' },
     { type: 'DIVISION', label: 'Divisiones Exactas', iconDesc: '144 ÷ 12' }

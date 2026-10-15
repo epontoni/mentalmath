@@ -26,6 +26,7 @@ import { TimerBar } from '@/components/game/TimerBar';
 import { Podium } from '@/components/game/Podium';
 import { Navbar } from '@/components/layout/Navbar';
 import { Keypad } from '@/components/game/Keypad';
+import { OptionsGrid } from '@/components/game/OptionsGrid';
 
 function HostRoomContent() {
   const params = useParams();
@@ -431,9 +432,25 @@ function HostRoomContent() {
               roomSettings?.hostPlays && player && !isProjectorMode ? 'p-6 sm:p-10 mb-6' : 'p-10 sm:p-20'
             }`}
           >
-            <div className={`${roomSettings?.hostPlays && player && !isProjectorMode ? 'text-5xl sm:text-7xl md:text-8xl' : 'text-6xl sm:text-8xl md:text-9xl'} font-heading font-black text-[#1C1D1F] tracking-tight my-2 sm:my-4`}>
+            <div className={`${roomSettings?.hostPlays && player && !isProjectorMode ? 'text-4xl sm:text-6xl md:text-7xl' : 'text-5xl sm:text-7xl md:text-8xl'} font-heading font-black text-[#1C1D1F] tracking-tight my-2 sm:my-4`}>
               {currentQuestion.expression}
             </div>
+
+            {currentQuestion.options && currentQuestion.options.length > 0 && (
+              <div className="mt-4 mb-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-2xl mx-auto text-left">
+                {currentQuestion.options.map((opt, i) => (
+                  <div
+                    key={opt.id ?? i}
+                    className="p-3 sm:p-3.5 rounded-2xl bg-[#EDE8E1] border-2 border-[#1C1D1F] text-sm sm:text-base font-heading font-black text-[#1C1D1F] flex items-center space-x-2.5 shadow-[0_2px_0_0_#1C1D1F]"
+                  >
+                    <span className="w-7 h-7 rounded-xl bg-white border border-[#1C1D1F] flex items-center justify-center text-xs font-black shrink-0">
+                      {i + 1}
+                    </span>
+                    <span className="flex-1 leading-snug">{opt.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <span className="inline-block mt-2 sm:mt-4 px-4 py-1.5 rounded-full bg-[#EDE8E1] border-2 border-[#1C1D1F] text-xs sm:text-sm font-heading font-black text-[#1C1D1F] uppercase tracking-widest">
               {roomSettings?.hostPlays && player && !isProjectorMode ? '¡Calcula y responde abajo!' : 'Responde en tu pantalla'}
@@ -461,12 +478,28 @@ function HostRoomContent() {
               {hasAnsweredCurrentRound ? (
                 <div className="w-full p-5 rounded-2xl bg-[#BFDEBA] border-2 border-[#1C1D1F] text-center shadow-[0_4px_0_0_#1C1D1F]">
                   <p className="font-heading font-black text-lg text-[#1C1D1F]">
-                    Tu respuesta: <span className="underline">{submittedAnswer}</span>
+                    Tu respuesta:{' '}
+                    <span className="underline">
+                      {currentQuestion.options?.find((o) => o.value === submittedAnswer)?.label ?? submittedAnswer}
+                    </span>
                   </p>
                   <p className="text-xs font-bold text-[#1C1D1F]/80">
                     Respuesta registrada. Esperando cierre del cálculo...
                   </p>
                 </div>
+              ) : currentQuestion.options && currentQuestion.options.length > 0 ? (
+                <OptionsGrid
+                  key={currentQuestion.id}
+                  options={currentQuestion.options}
+                  onSubmit={async (ans) => {
+                    try {
+                      await submitAnswer(ans);
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }}
+                  disabled={timeRemaining <= 0}
+                />
               ) : (
                 <Keypad
                   key={currentQuestion.id}

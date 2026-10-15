@@ -11,7 +11,7 @@ import {
   NextQuestionPayload,
   KickPlayerPayload
 } from '@/types/socket-events';
-import { ClientQuestion } from '@/types/game';
+import { ClientQuestion, Player } from '@/types/game';
 
 export function setupSocketHandlers(io: SocketIOServer, gameManager: GameManager) {
   io.on('connection', (socket: Socket) => {
@@ -44,7 +44,7 @@ export function setupSocketHandlers(io: SocketIOServer, gameManager: GameManager
     // --------------------------------------------------
     // Host: Reconnect to Room
     // --------------------------------------------------
-    socket.on('host_reconnect', (payload: { pin: string; hostId: string }, callback) => {
+    socket.on('host_reconnect', (payload: { pin: string; hostId: string; isProjector?: boolean }, callback) => {
       const room = gameManager.getRoom(payload.pin);
       if (!room) {
         if (typeof callback === 'function') {
@@ -53,6 +53,7 @@ export function setupSocketHandlers(io: SocketIOServer, gameManager: GameManager
         return;
       }
 
+      let hostPlayer: Player | undefined;
       if (!payload.isProjector) {
         room.hostSocketId = socket.id;
         if (room.hostPlayerId && room.players[room.hostPlayerId]) {
@@ -75,7 +76,8 @@ export function setupSocketHandlers(io: SocketIOServer, gameManager: GameManager
             expression: room.questions[room.currentQuestionIndex].expression,
             timeLimitSec: room.questions[room.currentQuestionIndex].timeLimitSec,
             serverStartedAt: room.roundStartedAt || Date.now(),
-            operationType: room.questions[room.currentQuestionIndex].operationType
+            operationType: room.questions[room.currentQuestionIndex].operationType,
+            options: room.questions[room.currentQuestionIndex].options
           }
         : null;
 
@@ -185,7 +187,8 @@ export function setupSocketHandlers(io: SocketIOServer, gameManager: GameManager
           expression: q.expression,
           timeLimitSec: q.timeLimitSec,
           serverStartedAt: roomState.roundStartedAt,
-          operationType: q.operationType
+          operationType: q.operationType,
+          options: q.options
         };
         const elapsed = (Date.now() - roomState.roundStartedAt) / 1000;
         remainingSec = Math.max(0, q.timeLimitSec - elapsed);

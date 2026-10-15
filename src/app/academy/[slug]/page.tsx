@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -22,6 +23,7 @@ import { getTechniqueBySlug, ACADEMY_TECHNIQUES } from '@/lib/academy-data';
 import { generateQuestionSet } from '@/lib/math-generator';
 import { QuestionData } from '@/types/game';
 import { Keypad } from '@/components/game/Keypad';
+import { OptionsGrid } from '@/components/game/OptionsGrid';
 import { TimerBar } from '@/components/game/TimerBar';
 import { sounds } from '@/lib/sound';
 
@@ -229,7 +231,26 @@ export default function AcademyLessonPage() {
             </div>
 
             <h2 className="text-2xl font-heading font-black text-[#1C1D1F] mb-3">{step.title}</h2>
-            <p className="text-[#595B5F] text-base leading-relaxed mb-6 font-medium">{step.explanation}</p>
+            <p className="text-[#595B5F] text-base leading-relaxed mb-4 font-medium whitespace-pre-line">{step.explanation}</p>
+
+            {step.referenceLinks && step.referenceLinks.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 mb-6 p-3 rounded-2xl bg-[#EDE8E1]/60 border border-[#1C1D1F]">
+                <span className="text-xs font-bold text-[#1C1D1F] flex items-center space-x-1">
+                  <span>🔗</span>
+                  <span>Lecciones recomendadas:</span>
+                </span>
+                {step.referenceLinks.map((rLink, rIdx) => (
+                  <Link
+                    key={rIdx}
+                    href={rLink.url}
+                    className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white hover:bg-[#FEE77B] text-[#1C1D1F] border border-[#1C1D1F] text-xs font-bold shadow-[0_2px_0_0_#1C1D1F] hover:-translate-y-0.5 transition-all"
+                  >
+                    <span>{rLink.text}</span>
+                    <ArrowRight className="w-3 h-3 stroke-[2.5]" />
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* Visual Step Breakdown Blocks */}
             <div className="p-6 rounded-2xl bg-[#EDE8E1] border-2 border-[#1C1D1F] flex flex-col items-center justify-center text-center shadow-[0_2px_0_0_#1C1D1F]">
@@ -237,24 +258,36 @@ export default function AcademyLessonPage() {
                 Demostración Visual
               </span>
 
-              <div className="text-3xl sm:text-5xl font-heading font-black text-[#1C1D1F] tracking-wider my-2 flex items-center justify-center flex-wrap gap-2 sm:gap-3">
+              {step.exampleFormula && (
+                <div className="text-xl sm:text-2xl font-mono font-black text-[#1C1D1F] mb-4 bg-white px-5 py-2.5 rounded-2xl border-2 border-[#1C1D1F] shadow-[0_2px_0_0_#1C1D1F] tracking-wide">
+                  {step.exampleFormula}
+                </div>
+              )}
+
+              <div className="text-2xl sm:text-4xl font-heading font-black text-[#1C1D1F] tracking-wider my-2 flex items-center justify-center flex-wrap gap-2.5 sm:gap-3.5">
                 {step.breakdown.map((item, idx) => (
-                  <span
-                    key={idx}
-                    className={`px-3.5 py-1.5 rounded-2xl border-2 border-[#1C1D1F] ${
-                      item.highlight
-                        ? item.color === 'emerald'
-                          ? 'bg-[#BFDEBA] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
-                          : item.color === 'rose'
-                          ? 'bg-[#FF7A59] text-white shadow-[0_3px_0_0_#1C1D1F]'
-                          : item.color === 'amber'
-                          ? 'bg-[#FEE77B] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
-                          : 'bg-[#ABD3DF] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
-                        : 'bg-white text-[#1C1D1F]'
-                    }`}
-                  >
-                    {item.text}
-                  </span>
+                  <div key={idx} className="flex flex-col items-center">
+                    <span
+                      className={`px-3.5 py-1.5 rounded-2xl border-2 border-[#1C1D1F] ${
+                        item.highlight
+                          ? item.color === 'emerald'
+                            ? 'bg-[#BFDEBA] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
+                            : item.color === 'rose'
+                            ? 'bg-[#FF7A59] text-white shadow-[0_3px_0_0_#1C1D1F]'
+                            : item.color === 'amber'
+                            ? 'bg-[#FEE77B] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
+                            : 'bg-[#ABD3DF] text-[#1C1D1F] shadow-[0_3px_0_0_#1C1D1F]'
+                          : 'bg-white text-[#1C1D1F]'
+                      }`}
+                    >
+                      {item.text}
+                    </span>
+                    {item.note && (
+                      <span className="text-[11px] font-bold text-[#595B5F] mt-1.5 text-center leading-tight max-w-[130px]">
+                        {item.note}
+                      </span>
+                    )}
+                  </div>
                 ))}
               </div>
 
@@ -366,12 +399,22 @@ export default function AcademyLessonPage() {
             </motion.div>
           </div>
 
-          {/* Keypad */}
+          {/* Keypad or Options Grid */}
           <div className="w-full shrink-0">
-            <Keypad
-              onSubmit={handleDrillSubmit}
-              disabled={feedbackState !== null || drillTimeRemaining <= 0}
-            />
+            {currentQ.options && currentQ.options.length > 0 ? (
+              <OptionsGrid
+                key={currentQ.id}
+                options={currentQ.options}
+                onSubmit={handleDrillSubmit}
+                disabled={feedbackState !== null || drillTimeRemaining <= 0}
+              />
+            ) : (
+              <Keypad
+                key={currentQ.id}
+                onSubmit={handleDrillSubmit}
+                disabled={feedbackState !== null || drillTimeRemaining <= 0}
+              />
+            )}
           </div>
         </div>
       </div>

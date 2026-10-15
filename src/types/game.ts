@@ -10,11 +10,24 @@ export type OperationType =
   | 'MULTIPLICATION_11'
   | 'COMPLEMENT_100'
   | 'SQUARE_5'
+  | 'SQUARE_2DIGIT'
+  | 'SQUARE_3DIGIT'
+  | 'SQUARE_4DIGIT'
+  | 'MAJOR_SYSTEM'
+  | 'FRACTION_COMPARE'
+  | 'FRACTION_OPS'
+  | 'SUPERMARKET_OFFERS'
   | 'DISTRIBUTIVE'
   | 'DOUBLE_HALF'
   | 'MIXED';
 
 export type GameDifficulty = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'MASTER' | 'MEDIUM';
+
+export interface QuestionOption {
+  id: string | number;
+  label: string;
+  value: number;
+}
 
 export interface Player {
   id: string;              // Persistent unique ID (stored in localStorage)
@@ -47,6 +60,7 @@ export interface QuestionData {
   timeLimitSec: number;
   operationType: OperationType;
   difficulty: GameDifficulty;
+  options?: QuestionOption[];
 }
 
 // Client-safe Question (Stripped of correctAnswer)
@@ -58,6 +72,7 @@ export interface ClientQuestion {
   timeLimitSec: number;
   serverStartedAt: number;
   operationType?: OperationType;
+  options?: QuestionOption[];
 }
 
 export interface RoomSettings {
@@ -149,6 +164,7 @@ export interface AcademyTrickStep {
     color?: string;
   }>;
   visualHint?: string;
+  referenceLinks?: Array<{ text: string; url: string }>;
 }
 
 export interface AcademyTechniqueData {

@@ -17,11 +17,12 @@ import {
   BookOpen,
   RotateCcw
 } from 'lucide-react';
-import { PlayerRoundResult, QuestionData } from '@/types/game';
+import { PlayerRoundResult, QuestionData, LeaderboardEntry } from '@/types/game';
 import { useGameSocket } from '@/hooks/useGameSocket';
 import { generateQuestionSet } from '@/lib/math-generator';
 import { sounds } from '@/lib/sound';
 import { Keypad } from '@/components/game/Keypad';
+import { OptionsGrid } from '@/components/game/OptionsGrid';
 import { TimerBar } from '@/components/game/TimerBar';
 import { Podium } from '@/components/game/Podium';
 import { Navbar } from '@/components/layout/Navbar';
@@ -248,13 +249,17 @@ function PlayContent() {
   // ----------------------------------------------------------------
   if (isSoloActive) {
     if (soloIsGameOver) {
-      const soloPodiumEntry = {
+      const soloPodiumEntry: LeaderboardEntry = {
         rank: 1,
         playerId: 'solo_player',
         nickname: inputNick || 'Jugador Solitario',
+        avatar: 'brain',
         score: soloScore,
         correctAnswers: soloCorrectCount,
-        streak: soloStreak
+        totalAnswers: soloQuestions.length,
+        accuracy: Math.round((soloCorrectCount / Math.max(1, soloQuestions.length)) * 100),
+        streak: soloStreak,
+        isConnected: true
       };
 
       return (
@@ -384,11 +389,20 @@ function PlayContent() {
           </div>
 
           <div className="w-full shrink-0">
-            <Keypad
-              key={currentSoloQ.id}
-              onSubmit={handleSoloSubmit}
-              disabled={soloFeedback !== null || soloTimeRemaining <= 0}
-            />
+            {currentSoloQ.options && currentSoloQ.options.length > 0 ? (
+              <OptionsGrid
+                key={currentSoloQ.id}
+                options={currentSoloQ.options}
+                onSubmit={handleSoloSubmit}
+                disabled={soloFeedback !== null || soloTimeRemaining <= 0}
+              />
+            ) : (
+              <Keypad
+                key={currentSoloQ.id}
+                onSubmit={handleSoloSubmit}
+                disabled={soloFeedback !== null || soloTimeRemaining <= 0}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -688,12 +702,22 @@ function PlayContent() {
                   <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
                 </div>
                 <h3 className="text-lg sm:text-xl font-heading font-black text-[#1C1D1F] mb-0.5">
-                  Respuesta Enviada: <span className="underline decoration-2">{submittedAnswer}</span>
+                  Respuesta Enviada:{' '}
+                  <span className="underline decoration-2">
+                    {currentQuestion.options?.find((o) => o.value === submittedAnswer)?.label ?? submittedAnswer}
+                  </span>
                 </h3>
                 <p className="text-xs font-bold text-[#1C1D1F]/80">
                   Esperando a que termine el tiempo de la ronda...
                 </p>
               </motion.div>
+            ) : currentQuestion.options && currentQuestion.options.length > 0 ? (
+              <OptionsGrid
+                key={currentQuestion.id}
+                options={currentQuestion.options}
+                onSubmit={handleSubmitKeypad}
+                disabled={timeRemaining <= 0}
+              />
             ) : (
               <Keypad
                 key={currentQuestion.id}

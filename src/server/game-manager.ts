@@ -328,7 +328,8 @@ export class GameManager {
       expression: currentQ.expression,
       timeLimitSec: currentQ.timeLimitSec,
       serverStartedAt: room.roundStartedAt,
-      operationType: currentQ.operationType
+      operationType: currentQ.operationType,
+      options: currentQ.options
     };
 
     // Broadcast question to Host and all Players in the room
@@ -606,7 +607,7 @@ export class GameManager {
     });
 
     // If procedural mode, generate a fresh question set
-    if (room.settings.mode === 'PROCEDURAL') {
+    if (room.settings.operations && room.settings.operations.length > 0) {
       room.questions = generateQuestionSet(
         room.settings.totalRounds,
         room.settings.operations,
